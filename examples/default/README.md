@@ -27,6 +27,7 @@ locals {
   enable_telemetry = true
   location         = "eastus"
   tags = {
+
     scenario  = "Default"
     project   = "Oracle Database @ Azure"
     createdby = "ODAA Infra - AVM Module"
