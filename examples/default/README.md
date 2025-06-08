@@ -64,21 +64,19 @@ resource "azurerm_resource_group" "this" {
 module "default" {
   source = "../../"
 
+  compute_count                        = 2
+  display_name                         = "odaa-infra-${random_string.suffix.result}"
   location                             = local.location
   name                                 = "odaa-infra-${random_string.suffix.result}"
-  display_name                         = "odaa-infra-${random_string.suffix.result}"
   resource_group_id                    = azurerm_resource_group.this.id
-  zone                                 = local.zone
-  compute_count                        = 2
   storage_count                        = 3
-  shape                                = "Exadata.X9M"
+  zone                                 = local.zone
+  enable_telemetry                     = local.enable_telemetry
   maintenance_window_leadtime_in_weeks = 0
-  maintenance_window_preference        = "NoPreference"
   maintenance_window_patching_mode     = "Rolling"
-
-  tags             = local.tags
-  enable_telemetry = local.enable_telemetry
-
+  maintenance_window_preference        = "NoPreference"
+  shape                                = "Exadata.X9M"
+  tags                                 = local.tags
 }
 
 ```
