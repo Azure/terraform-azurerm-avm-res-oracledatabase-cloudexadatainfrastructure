@@ -55,3 +55,6 @@ id_dsa.pub
 id_dsa
 *.pem
 *.key
+examples/*/policy
+*.mptfbackup
+.avm

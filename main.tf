@@ -1,6 +1,8 @@
 
 resource "azapi_resource" "odaa_infra" {
-  type = "Oracle.Database/cloudExadataInfrastructures@2023-09-01"
+  name      = var.name
+  parent_id = var.resource_group_id
+  type      = "Oracle.Database/cloudExadataInfrastructures@2023-09-01"
   body = {
     "location" : var.location,
     "zones" : [
@@ -20,9 +22,11 @@ resource "azapi_resource" "odaa_infra" {
       "storageCount" : var.storage_count,
     }
   }
-  name                      = var.name
-  parent_id                 = var.resource_group_id
+  create_headers            = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  delete_headers            = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  read_headers              = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
   schema_validation_enabled = false
+  update_headers            = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
 
   timeouts {
     create = "1h30m"
