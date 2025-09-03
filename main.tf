@@ -11,7 +11,6 @@ resource "azapi_resource" "odaa_infra" {
   location  = var.location
   tags      = var.tags
   body = {
-    "location" : var.location,
     "zones" : [
       var.zone
     ],
