@@ -71,7 +71,7 @@ variable "maintenance_window_patching_mode" {
 variable "maintenance_window_preference" {
   type        = string
   default     = "NoPreference"
-  description = "The maintenance window preference."
+  description = "The maintenance window preference. Valid values: CustomPreference, NoPreference"
 }
 
 #====================================================================================================
