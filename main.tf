@@ -14,16 +14,14 @@ resource "azapi_resource" "odaa_infra" {
     "zones" : [
       var.zone
     ],
-    "shape" : var.shape,
-    "storageCount" : var.storage_count,
-    "databaseServerType" : local.databaseServerType,
-    "storageServerType" : local.storageServerType,
-
-    "customerContacts" : var.customerContacts,
-
     "properties" : {
-      "computeCount" : var.compute_count,
       "displayName" : var.display_name,
+      "shape" : var.shape,
+      "computeCount" : var.compute_count,
+      "storageCount" : var.storage_count,
+      "databaseServerType" : local.databaseServerType,
+      "storageServerType" : local.storageServerType,
+      "customerContacts" : var.customerContacts,
       "maintenanceWindow" : {
         "leadTimeInWeeks" : var.maintenance_window_leadtime_in_weeks,
         "preference" : var.maintenance_window_preference,
