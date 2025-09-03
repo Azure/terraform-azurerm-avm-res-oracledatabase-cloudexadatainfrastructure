@@ -48,6 +48,9 @@ locals {
     createdby = "ODAA Infra - AVM Module"
   }
   zone = "3"
+  customerContacts = [
+    {email="your_email@here"}
+  ]
 }
 resource "random_string" "suffix" {
   length  = 5
@@ -59,20 +62,81 @@ resource "azurerm_resource_group" "this" {
   name     = "example-resource-group"
   tags     = local.tags
 }
-module "default" {
+
+# X11M Example with default maintenance window
+module "exadbInfraX11M" {
   source                               = "../../"
+
+  # Basics
   location                             = local.location
+  zone                                 = 1
   name                                 = "odaa-infra-${random_string.suffix.result}"
   display_name                         = "odaa-infra-${random_string.suffix.result}"
   resource_group_id                    = azurerm_resource_group.this.id
-  zone                                 = local.zone
+
+  # Configuration
   compute_count                        = 2
   storage_count                        = 3
-  shape                                = "Exadata.X9M"
+  shape                                = "Exadata.X11M"
+
+  # maintenance_window
   maintenance_window_leadtime_in_weeks = 0
   maintenance_window_preference        = "NoPreference"
   maintenance_window_patching_mode     = "Rolling"
+  customerContacts = local.customerContacts
+
+  # Azure resource management
   tags                                 = local.tags
+
+
+  # AVM specific
+  enable_telemetry                     = local.enable_telemetry
+}
+
+# X9M Example with custome maintenance window
+module "exadbInfraX9M" {
+  source                               = "../../"
+
+  # Basics
+  location                             = local.location
+  zone                                 = 1
+  name                                 = "odaa-infra-${random_string.suffix.result}"
+  display_name                         = "odaa-infra-${random_string.suffix.result}"
+  resource_group_id                    = azurerm_resource_group.this.id
+
+  # Configuration
+  compute_count                        = 2
+  storage_count                        = 3
+  shape                                = "Exadata.X9M"
+
+  # maintenance_window
+  maintenance_window_leadtime_in_weeks = 2
+  maintenance_window_patching_mode     = "Rolling"
+  maintenance_window_preference        = "CustomPreference"
+  maintenance_window_months = [{
+    name = "February"
+    }, {
+    name = "May"
+    }, {
+    name = "August"
+    }, {
+    name = "January"
+  }]
+  maintenance_window_weeksOfMonth = [1]
+  maintenance_window_daysOfWeek = [{
+    name = "Monday"
+  }]
+  maintenance_window_hoursOfDay = [12]
+
+  customActionTimeoutInMins    = 0
+  isCustomActionTimeoutEnabled = false
+  customerContacts = local.customerContacts
+
+  # Azure resource management
+  tags                                 = local.tags
+
+
+  # AVM specific
   enable_telemetry                     = local.enable_telemetry
 }
 ```
