@@ -111,7 +111,7 @@ DESCRIPTION
 variable "shape" {
   type        = string
   default     = "Exadata.X9M"
-  description = "The shape of the infrastructure."
+  description = "The shape of the infrastructure. Valid value Exadata.X9M and Exadata.X11M"
 }
 
 # tflint-ignore: terraform_unused_declarations
@@ -119,4 +119,66 @@ variable "tags" {
   type        = map(string)
   default     = null
   description = "(Optional) Tags of the resource."
+}
+
+
+# Align with 2025-03-01 https://learn.microsoft.com/en-us/rest/api/oracle/cloud-exadata-infrastructures/create-or-update?view=rest-oracle-2025-03-01&tabs=HTTP
+variable "databaseServerType" {
+  type = string
+  default = null
+  description = "The database server model type of the cloud Exadata infrastructure resource. Null for X9M. Default to X11M for X11M"
+}
+
+variable "storageServerType" {
+  type = string
+  default = null
+  description = "The storage server model type of the cloud Exadata infrastructure resource. Null for X9M. Default to X11M-HC for X11M"
+}
+
+variable "customActionTimeoutInMins" {
+  type = number
+  default = 0
+  description = "Determines the amount of time the system will wait before the start of each database server patching operation. Custom action timeout is in minutes and valid value is between 15 to 120 (inclusive)."
+}
+
+variable "isCustomActionTimeoutEnabled" {
+  type = bool
+  default = false
+  description = "If true, enables the configuration of a custom action timeout (waiting period) between database server patching operations."
+}
+
+variable "maintenance_window_hoursOfDay" {
+  type = list(number)
+  default = null
+  description = "The window of hours during the day when maintenance should be performed. The window is a 4 hour slot. Valid values are - 0 - represents time slot 0:00 - 3:59 UTC - 4 - represents time slot 4:00 - 7:59 UTC - 8 - represents time slot 8:00 - 11:59 UTC - 12 - represents time slot 12:00 - 15:59 UTC - 16 - represents time slot 16:00 - 19:59 UTC - 20 - represents time slot 20:00 - 23:59 UTC"
+}
+
+variable "maintenance_window_weeksOfMonth" {
+  type = list(number)
+  default = null
+  description = "Weeks during the month when maintenance should be performed. Weeks start on the 1st, 8th, 15th, and 22nd days of the month, and have a duration of 7 days. Weeks start and end based on calendar dates, not days of the week. For example, to allow maintenance during the 2nd week of the month (from the 8th day to the 14th day of the month), use the value 2. Maintenance cannot be scheduled for the fifth week of months that contain more than 28 days. Note that this parameter works in conjunction with the daysOfWeek and hoursOfDay parameters to allow you to specify specific days of the week and hours that maintenance will be performed."
+}
+
+variable "maintenance_window_daysOfWeek" {
+  type = list(
+    object({name = string})
+  )
+  default = null
+  description = "Days during the week when maintenance should be performed."
+}
+
+variable "maintenance_window_months" {
+  type = list(
+    object({name = string})
+  )
+  default = null
+  description = "Months during the year when maintenance should be performed."
+}
+
+variable "customerContacts" {
+  type = list(
+    object({email = string})
+  )
+  default = null
+  description = "The list of customer email addresses that receive information from Oracle about the specified OCI Database service resource. Oracle uses these email addresses to send notifications about planned and unplanned software maintenance updates, information about system hardware, and other information needed by administrators. Up to 10 email addresses can be added to the customer contacts for a cloud Exadata infrastructure instance."
 }
