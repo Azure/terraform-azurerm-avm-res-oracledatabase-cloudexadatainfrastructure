@@ -1,6 +1,6 @@
 locals {
-  databaseServerType = lower(var.shape) == "exadata.x11m" && var.databaseServerType == null ? "X11M" : var.databaseServerType
-  storageServerType  = lower(var.shape) == "exadata.x11m" && var.storageServerType == null ? "X11M-HC" : var.storageServerType
+  database_server_type = lower(var.shape) == "exadata.x11m" && var.database_server_type == null ? "X11M" : var.database_server_type
+  storage_server_type  = lower(var.shape) == "exadata.x11m" && var.storage_server_type == null ? "X11M-HC" : var.storage_server_type
 }
 
 resource "azapi_resource" "odaa_infra" {
@@ -19,19 +19,19 @@ resource "azapi_resource" "odaa_infra" {
       "shape" : var.shape,
       "computeCount" : var.compute_count,
       "storageCount" : var.storage_count,
-      "databaseServerType" : local.databaseServerType,
-      "storageServerType" : local.storageServerType,
-      "customerContacts" : var.customerContacts,
+      "databaseServerType" : local.database_server_type,
+      "storageServerType" : local.storage_server_type,
+      "customerContacts" : var.customer_contacts,
       "maintenanceWindow" : {
         "leadTimeInWeeks" : var.maintenance_window_leadtime_in_weeks,
         "preference" : var.maintenance_window_preference,
         "patchingMode" : var.maintenance_window_patching_mode,
-        "customActionTimeoutInMins" : var.customActionTimeoutInMins,
-        "isCustomActionTimeoutEnabled" : var.isCustomActionTimeoutEnabled,
-        "daysOfWeek" : var.maintenance_window_daysOfWeek,
-        "hoursOfDay" : var.maintenance_window_hoursOfDay,
+        "customActionTimeoutInMins" : var.custom_action_timeout_in_mins,
+        "isCustomActionTimeoutEnabled" : var.is_custom_action_timeout_enabled,
+        "daysOfWeek" : var.maintenance_window_days_of_week
+        "hoursOfDay" : var.maintenance_window_hours_of_day,
         "months" : var.maintenance_window_months,
-        "weeksOfMonth" : var.maintenance_window_weeksOfMonth
+        "weeksOfMonth" : var.maintenance_window_weeks_of_month
       }
     }
   }
