@@ -4,12 +4,10 @@ locals {
 }
 
 resource "azapi_resource" "odaa_infra" {
-  type = "Oracle.Database/cloudExadataInfrastructures@2025-03-01"
-
+  location  = var.location
   name      = var.name
   parent_id = var.resource_group_id
-  location  = var.location
-  tags      = var.tags
+  type      = "Oracle.Database/cloudExadataInfrastructures@2025-03-01"
   body = {
     "zones" : [
       var.zone
@@ -35,14 +33,13 @@ resource "azapi_resource" "odaa_infra" {
       }
     }
   }
-
+  create_headers            = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  delete_headers            = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
   ignore_null_property      = true
+  read_headers              = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
   schema_validation_enabled = false
-
-  create_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  read_headers   = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  update_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  delete_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  tags                      = var.tags
+  update_headers            = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
 
   timeouts {
     create = "1h30m"

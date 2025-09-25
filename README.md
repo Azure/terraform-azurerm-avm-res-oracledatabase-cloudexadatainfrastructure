@@ -48,9 +48,6 @@ locals {
     createdby = "ODAA Infra - AVM Module"
   }
   zone = "3"
-  customerContacts = [
-    {email="your_email@here"}
-  ]
 }
 resource "random_string" "suffix" {
   length  = 5
@@ -62,81 +59,20 @@ resource "azurerm_resource_group" "this" {
   name     = "example-resource-group"
   tags     = local.tags
 }
-
-# X11M Example with default maintenance window
-module "exadbInfraX11M" {
+module "default" {
   source                               = "../../"
-
-  # Basics
   location                             = local.location
-  zone                                 = 1
   name                                 = "odaa-infra-${random_string.suffix.result}"
   display_name                         = "odaa-infra-${random_string.suffix.result}"
   resource_group_id                    = azurerm_resource_group.this.id
-
-  # Configuration
-  compute_count                        = 2
-  storage_count                        = 3
-  shape                                = "Exadata.X11M"
-
-  # maintenance_window
-  maintenance_window_leadtime_in_weeks = 0
-  maintenance_window_preference        = "NoPreference"
-  maintenance_window_patching_mode     = "Rolling"
-  customer_contacts = local.customerContacts
-
-  # Azure resource management
-  tags                                 = local.tags
-
-
-  # AVM specific
-  enable_telemetry                     = local.enable_telemetry
-}
-
-# X9M Example with custome maintenance window
-module "exadbInfraX9M" {
-  source                               = "../../"
-
-  # Basics
-  location                             = local.location
-  zone                                 = 1
-  name                                 = "odaa-infra-${random_string.suffix.result}"
-  display_name                         = "odaa-infra-${random_string.suffix.result}"
-  resource_group_id                    = azurerm_resource_group.this.id
-
-  # Configuration
+  zone                                 = local.zone
   compute_count                        = 2
   storage_count                        = 3
   shape                                = "Exadata.X9M"
-
-  # maintenance_window
-  maintenance_window_leadtime_in_weeks = 2
+  maintenance_window_leadtime_in_weeks = 0
+  maintenance_window_preference        = "NoPreference"
   maintenance_window_patching_mode     = "Rolling"
-  maintenance_window_preference        = "CustomPreference"
-  maintenance_window_months = [{
-    name = "February"
-    }, {
-    name = "May"
-    }, {
-    name = "August"
-    }, {
-    name = "January"
-  }]
-  maintenance_window_weeks_of_month = [1]
-  maintenance_window_days_of_week = [{
-    name = "Monday"
-  }]
-  maintenance_window_hours_of_day = [12]
-
-  custom_action_timeout_in_mins    = 0
-  is_custom_action_timeout_enabled = false
-  customer_contacts = local.customerContacts
-
-  # Azure resource management
   tags                                 = local.tags
-
-
-  # AVM specific
   enable_telemetry                     = local.enable_telemetry
 }
 ```
@@ -145,11 +81,7 @@ module "exadbInfraX9M" {
 | Name                                 | Type        | Default Value      | Description                                                                 |
 |--------------------------------------|-------------|--------------------|-----------------------------------------------------------------------------|
 | `compute_count`                      | `number`    |                    | The number of compute nodes in the infrastructure.                          |
-| `custom_action_timeout_in_mins`                      | `number`    | `0`                   | Determines the amount of time the system will wait before the start of each database server patching operation. Custom action timeout is in minutes and valid value is between 15 to 120 (inclusive).                          |
-| `customer_contacts`                      | `list(object)`    | `null`                   | The list of customer email addresses that receive information from Oracle about the specified OCI Database service resource. Oracle uses these email addresses to send notifications about planned and unplanned software maintenance updates, information about system hardware, and other information needed by administrators. Up to 10 email addresses can be added to the customer contacts for a cloud Exadata infrastructure instance.                          |
-| `database_server_type`                       | `string`    |                    | The database server model type of the cloud Exadata infrastructure resource. Null for X9M. Default to X11M for X11M. |
 | `display_name`                       | `string`    |                    | The display name of the infrastructure.                                     |
-| `is_custom_action_timeout_enabled`                       | `bool`    |   `false`                 | If true, enables the configuration of a custom action timeout (waiting period) between database server patching operations.                                     |
 | `location`                           | `string`    |                    | Azure region where the resource should be deployed.                         |
 | `name`                               | `string`    |                    | The name of the Oracle Exadata Infrastructure resource.                     |
 | `resource_group_id`                  | `string`    |                    | The resource group ID where the resources will be deployed.                 |
@@ -159,12 +91,7 @@ module "exadbInfraX9M" {
 | `maintenance_window_leadtime_in_weeks` | `number`    | `0`                | The maintenance window lead time in weeks.                                  |
 | `maintenance_window_patching_mode`   | `string`    | `"Rolling"`        | The maintenance window patching mode.                                       |
 | `maintenance_window_preference`      | `string`    | `"NoPreference"`   | The maintenance window preference.                                          |
-| `maintenance_window_hours_of_day`      | `list(number)`    | `"null"`   | The window of hours during the day when maintenance should be performed. The window is a 4 hour slot. Valid values are - 0 - represents time slot 0:00 - 3:59 UTC - 4 - represents time slot 4:00 - 7:59 UTC - 8 - represents time slot 8:00 - 11:59 UTC - 12 - represents time slot 12:00 - 15:59 UTC - 16 - represents time slot 16:00 - 19:59 UTC - 20 - represents time slot 20:00 - 23:59 UTC|
-| `maintenance_window_weeks_of_month`      | `list(number)`    | `"null"`   | Weeks during the month when maintenance should be performed. Weeks start on the 1st, 8th, 15th, and 22nd days of the month, and have a duration of 7 days. Weeks start and end based on calendar dates, not days of the week. For example, to allow maintenance during the 2nd week of the month (from the 8th day to the 14th day of the month), use the value 2. Maintenance cannot be scheduled for the fifth week of months that contain more than 28 days. Note that this parameter works in conjunction with the daysOfWeek and hoursOfDay parameters to allow you to specify specific days of the week and hours that maintenance will be performed.|
-| `maintenance_window_days_of_week`      | `list(object)`    | `"null"`   | Days during the week when maintenance should be performed.|
-| `maintenance_window_months`      | `list(object)`    | `"null"`   | Months during the year when maintenance should be performed.|
 | `shape`                              | `string`    | `"Exadata.X9M"`    | The shape of the infrastructure.                                            |
-| `storage_server_type`                       | `string`    |                    | The storage server model type of the cloud Exadata infrastructure resource. Null for X9M. Default to X11M-HC for X11M |
 | `tags`                               | `map(string)` | `null`             | (Optional) Tags of the resource.                                            |
 ## Outputs
 | Name         | Type   | Description                        |
@@ -252,6 +179,36 @@ Type: `string`
 
 The following input variables are optional (have default values):
 
+### <a name="input_custom_action_timeout_in_mins"></a> [custom\_action\_timeout\_in\_mins](#input\_custom\_action\_timeout\_in\_mins)
+
+Description: Determines the amount of time the system will wait before the start of each database server patching operation. Custom action timeout is in minutes and valid value is between 15 to 120 (inclusive).
+
+Type: `number`
+
+Default: `0`
+
+### <a name="input_customer_contacts"></a> [customer\_contacts](#input\_customer\_contacts)
+
+Description: The list of customer email addresses that receive information from Oracle about the specified OCI Database service resource. Oracle uses these email addresses to send notifications about planned and unplanned software maintenance updates, information about system hardware, and other information needed by administrators. Up to 10 email addresses can be added to the customer contacts for a cloud Exadata infrastructure instance.
+
+Type:
+
+```hcl
+list(
+    object({ email = string })
+  )
+```
+
+Default: `null`
+
+### <a name="input_database_server_type"></a> [database\_server\_type](#input\_database\_server\_type)
+
+Description: The database server model type of the cloud Exadata infrastructure resource. Null for X9M. Default to X11M for X11M
+
+Type: `string`
+
+Default: `null`
+
 ### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
 
 Description: This variable controls whether or not telemetry is enabled for the module.  
@@ -262,6 +219,36 @@ Type: `bool`
 
 Default: `true`
 
+### <a name="input_is_custom_action_timeout_enabled"></a> [is\_custom\_action\_timeout\_enabled](#input\_is\_custom\_action\_timeout\_enabled)
+
+Description: If true, enables the configuration of a custom action timeout (waiting period) between database server patching operations.
+
+Type: `bool`
+
+Default: `false`
+
+### <a name="input_maintenance_window_days_of_week"></a> [maintenance\_window\_days\_of\_week](#input\_maintenance\_window\_days\_of\_week)
+
+Description: Days during the week when maintenance should be performed.
+
+Type:
+
+```hcl
+list(
+    object({ name = string })
+  )
+```
+
+Default: `null`
+
+### <a name="input_maintenance_window_hours_of_day"></a> [maintenance\_window\_hours\_of\_day](#input\_maintenance\_window\_hours\_of\_day)
+
+Description: The window of hours during the day when maintenance should be performed. The window is a 4 hour slot. Valid values are - 0 - represents time slot 0:00 - 3:59 UTC - 4 - represents time slot 4:00 - 7:59 UTC - 8 - represents time slot 8:00 - 11:59 UTC - 12 - represents time slot 12:00 - 15:59 UTC - 16 - represents time slot 16:00 - 19:59 UTC - 20 - represents time slot 20:00 - 23:59 UTC
+
+Type: `list(number)`
+
+Default: `null`
+
 ### <a name="input_maintenance_window_leadtime_in_weeks"></a> [maintenance\_window\_leadtime\_in\_weeks](#input\_maintenance\_window\_leadtime\_in\_weeks)
 
 Description: The maintenance window load time in weeks.
@@ -269,6 +256,20 @@ Description: The maintenance window load time in weeks.
 Type: `number`
 
 Default: `0`
+
+### <a name="input_maintenance_window_months"></a> [maintenance\_window\_months](#input\_maintenance\_window\_months)
+
+Description: Months during the year when maintenance should be performed.
+
+Type:
+
+```hcl
+list(
+    object({ name = string })
+  )
+```
+
+Default: `null`
 
 ### <a name="input_maintenance_window_patching_mode"></a> [maintenance\_window\_patching\_mode](#input\_maintenance\_window\_patching\_mode)
 
@@ -280,11 +281,19 @@ Default: `"Rolling"`
 
 ### <a name="input_maintenance_window_preference"></a> [maintenance\_window\_preference](#input\_maintenance\_window\_preference)
 
-Description: The maintenance window preference.
+Description: The maintenance window preference. Valid values: CustomPreference, NoPreference
 
 Type: `string`
 
 Default: `"NoPreference"`
+
+### <a name="input_maintenance_window_weeks_of_month"></a> [maintenance\_window\_weeks\_of\_month](#input\_maintenance\_window\_weeks\_of\_month)
+
+Description: Weeks during the month when maintenance should be performed. Weeks start on the 1st, 8th, 15th, and 22nd days of the month, and have a duration of 7 days. Weeks start and end based on calendar dates, not days of the week. For example, to allow maintenance during the 2nd week of the month (from the 8th day to the 14th day of the month), use the value 2. Maintenance cannot be scheduled for the fifth week of months that contain more than 28 days. Note that this parameter works in conjunction with the daysOfWeek and hoursOfDay parameters to allow you to specify specific days of the week and hours that maintenance will be performed.
+
+Type: `list(number)`
+
+Default: `null`
 
 ### <a name="input_role_assignments"></a> [role\_assignments](#input\_role\_assignments)
 
@@ -320,11 +329,19 @@ Default: `{}`
 
 ### <a name="input_shape"></a> [shape](#input\_shape)
 
-Description: The shape of the infrastructure.
+Description: The shape of the infrastructure. Valid value Exadata.X9M and Exadata.X11M
 
 Type: `string`
 
 Default: `"Exadata.X9M"`
+
+### <a name="input_storage_server_type"></a> [storage\_server\_type](#input\_storage\_server\_type)
+
+Description: The storage server model type of the cloud Exadata infrastructure resource. Null for X9M. Default to X11M-HC for X11M
+
+Type: `string`
+
+Default: `null`
 
 ### <a name="input_tags"></a> [tags](#input\_tags)
 
