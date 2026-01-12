@@ -191,3 +191,27 @@ variable "tags" {
   default     = null
   description = "(Optional) Tags of the resource."
 }
+
+variable "timeouts" {
+  type = object({
+    create = optional(string, "6h")
+    delete = optional(string, "3h")
+  })
+  default     = {}
+  description = <<DESCRIPTION
+Configuration for resource operation timeouts.
+
+- `create` - (Optional) The timeout for the create operation. Defaults to `6h` (6 hours) due to the extended time required to provision Oracle Exadata infrastructure.
+- `delete` - (Optional) The timeout for the delete operation. Defaults to `3h` (3 hours).
+
+Note: Update operations are not supported by Oracle Exadata Infrastructure resources. Any property change will trigger a destroy and recreate of the resource.
+
+Example:
+```hcl
+timeouts = {
+  create = "2h"
+  delete = "30m"
+}
+```
+DESCRIPTION
+}
