@@ -9,6 +9,7 @@ This repository contains a Terraform module for deploying Oracle Database Cloud 
 - Deploys Oracle Database Cloud Exadata Infrastructure on Azure
 - Supports telemetry and monitoring
 - Configurable maintenance windows
+- Configurable resource operation timeouts
 ## Prerequisites
 - Terraform >= 1.9.2
 - Azure CLI
@@ -74,6 +75,12 @@ module "default" {
   maintenance_window_patching_mode     = "Rolling"
   tags                                 = local.tags
   enable_telemetry                     = local.enable_telemetry
+
+  # Optional: Configure custom timeouts for resource operations
+  # timeouts = {
+  #   create = "2h"   # Default: 6h
+  #   delete = "1h"   # Default: 3h
+  # }
 }
 ```
 
@@ -93,6 +100,7 @@ module "default" {
 | `maintenance_window_preference`      | `string`    | `"NoPreference"`   | The maintenance window preference.                                          |
 | `shape`                              | `string`    | `"Exadata.X9M"`    | The shape of the infrastructure.                                            |
 | `tags`                               | `map(string)` | `null`             | (Optional) Tags of the resource.                                            |
+| `timeouts`                           | `object`    | `{}`               | Configuration for resource operation timeouts. Supports `create` (default: 6h) and `delete` (default: 3h). |
 ## Outputs
 | Name         | Type   | Description                        |
 |--------------|--------|------------------------------------|
@@ -349,6 +357,26 @@ Description: (Optional) Tags of the resource.
 Type: `map(string)`
 
 Default: `null`
+
+### <a name="input_timeouts"></a> [timeouts](#input\_timeouts)
+
+Description: Configuration for resource operation timeouts.
+
+- `create` - (Optional) The timeout for the create operation. Defaults to `6h` (6 hours) due to the extended time required to provision Oracle Exadata infrastructure.
+- `delete` - (Optional) The timeout for the delete operation. Defaults to `3h` (3 hours).
+
+Note: Update operations are not supported by Oracle Exadata Infrastructure resources. Any property change will trigger a destroy and recreate of the resource.
+
+Type:
+
+```hcl
+object({
+  create = optional(string, "6h")
+  delete = optional(string, "3h")
+})
+```
+
+Default: `{}`
 
 ## Outputs
 

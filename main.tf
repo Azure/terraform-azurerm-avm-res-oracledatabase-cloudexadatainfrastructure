@@ -42,8 +42,8 @@ resource "azapi_resource" "odaa_infra" {
   update_headers            = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
 
   timeouts {
-    create = "1h30m"
-    delete = "20m"
+    create = var.timeouts.create
+    delete = var.timeouts.delete
   }
 }
 

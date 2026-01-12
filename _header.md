@@ -7,6 +7,7 @@ This repository contains a Terraform module for deploying Oracle Database Cloud 
 - Deploys Oracle Database Cloud Exadata Infrastructure on Azure
 - Supports telemetry and monitoring
 - Configurable maintenance windows
+- Configurable resource operation timeouts
 ## Prerequisites
 - Terraform >= 1.9.2
 - Azure CLI
@@ -72,6 +73,12 @@ module "default" {
   maintenance_window_patching_mode     = "Rolling"
   tags                                 = local.tags
   enable_telemetry                     = local.enable_telemetry
+
+  # Optional: Configure custom timeouts for resource operations
+  # timeouts = {
+  #   create = "2h"   # Default: 6h
+  #   delete = "1h"   # Default: 3h
+  # }
 }
 ```
 
@@ -91,6 +98,7 @@ module "default" {
 | `maintenance_window_preference`      | `string`    | `"NoPreference"`   | The maintenance window preference.                                          |
 | `shape`                              | `string`    | `"Exadata.X9M"`    | The shape of the infrastructure.                                            |
 | `tags`                               | `map(string)` | `null`             | (Optional) Tags of the resource.                                            |
+| `timeouts`                           | `object`    | `{}`               | Configuration for resource operation timeouts. Supports `create` (default: 6h) and `delete` (default: 3h). |
 ## Outputs
 | Name         | Type   | Description                        |
 |--------------|--------|------------------------------------|

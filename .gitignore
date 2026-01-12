@@ -48,6 +48,8 @@ avm.tflint_module.merged.hcl
 # MacOS
 .DS_Store
 
+# Claude AI configuration
+.claude/
 
 id_rsa.pub
 id_rsa
