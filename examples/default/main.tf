@@ -72,11 +72,5 @@ module "default" {
   maintenance_window_preference        = "NoPreference"
   shape                                = "Exadata.X9M"
   tags                                 = local.tags
-
-  # Optional: Configure custom timeouts for resource operations
-  # timeouts = {
-  #   create = "2h"   # Default: 6h
-  #   delete = "1h"   # Default: 3h
-  # }
 }
 
