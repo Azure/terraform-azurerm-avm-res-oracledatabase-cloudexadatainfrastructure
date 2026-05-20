@@ -27,16 +27,13 @@ provider "azurerm" {
 
 locals {
   enable_telemetry = true
-  location         = "ukwest"
+  location         = "eastus"
   tags = {
 
-    scenario     = "Default"
-    project      = "Oracle Database @ Azure"
-    createdby    = "ODAA Infra - AVM Module"
-    delete       = "yes"
-    Purpose      = "Test"
-    Expiration   = "20-May-26"
-    "Created By" = "temandin"
+    scenario  = "Default"
+    project   = "Oracle Database @ Azure"
+    createdby = "ODAA Infra - AVM Module"
+    delete    = "yes"
   }
   zone = "3"
 }
