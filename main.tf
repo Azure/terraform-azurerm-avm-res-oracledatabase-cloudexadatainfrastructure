@@ -9,9 +9,7 @@ resource "azapi_resource" "odaa_infra" {
   parent_id = var.resource_group_id
   type      = "Oracle.Database/cloudExadataInfrastructures@2025-03-01"
   body = {
-    "zones" : [
-      var.zone
-    ],
+    "zones" : var.zone != null ? [var.zone] : [],
     "properties" : {
       "displayName" : var.display_name,
       "shape" : var.shape,
