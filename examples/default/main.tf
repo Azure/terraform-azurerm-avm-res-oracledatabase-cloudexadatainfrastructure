@@ -23,10 +23,13 @@ locals {
   location         = "eastus"
   tags = {
 
-    scenario  = "Default"
-    project   = "Oracle Database @ Azure"
-    createdby = "ODAA Infra - AVM Module"
-    delete    = "yes"
+    scenario     = "Default"
+    project      = "Oracle Database @ Azure"
+    createdby    = "ODAA Infra - AVM Module"
+    delete       = "yes"
+    Purpose      = "AVM Testing"
+    "Created By" = "ODAA Infra - AVM Module"
+    Expiration   = "22-May-26"
   }
   zone = "1"
 }
