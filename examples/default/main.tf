@@ -28,7 +28,7 @@ locals {
     createdby = "ODAA Infra - AVM Module"
     delete    = "yes"
   }
-  zone = "3"
+  zone = "1"
 }
 
 
