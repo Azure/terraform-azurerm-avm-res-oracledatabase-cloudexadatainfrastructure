@@ -36,11 +36,10 @@ variable "storage_count" {
 variable "zone" {
   type        = string
   description = "The Availability Zone for the resource."
-  nullable    = false
 
   validation {
-    condition     = can(regex("^[1-3]$", var.zone))
-    error_message = "The zone must be a number between 1 and 3."
+    condition     = var.zone == null || try(contains(["1", "2", "3"], var.zone), false)
+    error_message = "The zone must be null for regions with no availability zones or a number between 1 and 3 for regions with availability zones."
   }
 }
 
@@ -161,7 +160,7 @@ A map of role assignments to create on this resource. The map key is deliberatel
 - `condition_version` - The version of the condition syntax. Valid values are '2.0'.
 - `delegated_managed_identity_resource_id` - (Optional) The delegated Azure Resource Id which contains a Managed Identity. Changing this forces a new resource to be created. This field is only used in cross-tenant scenario.
 - `principal_type` - (Optional) The type of the `principal_id`. Possible values are `User`, `Group` and `ServicePrincipal`. It is necessary to explicitly set this attribute when creating role assignments if the principal creating the assignment is constrained by ABAC rules that filters on the PrincipalType attribute.
-  
+
 
 > Note: only set `skip_service_principal_aad_check` to true if you are assigning a role to a service principal.
 DESCRIPTION
