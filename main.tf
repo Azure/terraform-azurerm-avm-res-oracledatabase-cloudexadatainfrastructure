@@ -44,4 +44,3 @@ resource "azapi_resource" "odaa_infra" {
     delete = var.timeouts.delete
   }
 }
-
