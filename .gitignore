@@ -59,4 +59,4 @@ id_dsa
 *.key
 examples/*/policy
 *.mptfbackup
-.avm
+.avm/managed-files.json
