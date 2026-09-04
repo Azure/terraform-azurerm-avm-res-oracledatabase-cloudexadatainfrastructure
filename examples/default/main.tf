@@ -34,8 +34,6 @@ locals {
   zone = "1"
 }
 
-
-
 # This ensures we have unique CAF compliant names for our resources.
 module "naming" {
   source  = "Azure/naming/azurerm"
@@ -76,4 +74,3 @@ module "default" {
   shape                                = "Exadata.X9M"
   tags                                 = local.tags
 }
-
