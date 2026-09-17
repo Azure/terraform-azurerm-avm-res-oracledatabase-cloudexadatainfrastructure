@@ -74,7 +74,7 @@ module "default" {
   resource_group_id                    = azurerm_resource_group.this.id
   storage_count                        = 3
   zone                                 = local.zone
-  enable_telemetry                     = local.enable_telemetry
+  enable_telemetry                     = false
   maintenance_window_leadtime_in_weeks = 0
   maintenance_window_patching_mode     = "Rolling"
   maintenance_window_preference        = "NoPreference"
