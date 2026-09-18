@@ -1,0 +1,11 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Oracle Exadata Infrastructure",
+  "moduleDescription": "AVM Resource Module for Oracle Exadata Infrastructure",
+  "canonicalType": "Oracle.Database/cloudExadataInfrastructures",
+  "owners": [
+    "sihbher",
+    "terrymandin"
+  ],
+  "telemetryIdPrefix": "46d3xtrf.res.cfc10dd"
+}
