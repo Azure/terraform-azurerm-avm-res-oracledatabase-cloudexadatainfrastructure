@@ -26,8 +26,7 @@ provider "azurerm" {
 }
 
 locals {
-  enable_telemetry = true
-  location         = "eastus"
+  location = "eastus"
   tags = {
 
     scenario     = "Default"
